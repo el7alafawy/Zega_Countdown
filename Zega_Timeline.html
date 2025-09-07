@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#DAA520">
+    <title>قصة الحب</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap");
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: "Cairo", "Amiri", serif;
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 50%, #fff 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 20px 15px;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(218, 165, 32, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 192, 203, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(218, 165, 32, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .rose {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            font-size: 1.2rem;
+        }
+
+        .rose:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .rose:nth-child(2) { top: 30%; right: 15%; animation-delay: 2s; }
+        .rose:nth-child(3) { top: 60%; left: 5%; animation-delay: 4s; }
+        .rose:nth-child(4) { bottom: 20%; right: 20%; animation-delay: 1s; }
+        .rose:nth-child(5) { top: 80%; left: 80%; animation-delay: 3s; }
+
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #8B4513;
+        }
+
+        .timeline-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #DAA520, #B8860B, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(218, 165, 32, 0.3);
+            font-family: "Amiri", serif;
+            line-height: 1.2;
+        }
+
+        .timeline-header p {
+            font-size: 1.1rem;
+            color: #8B4513;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        .current-date {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 15px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,249,250,0.9));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 2px solid #DAA520;
+            color: #8B4513;
+            font-size: 1rem;
+            box-shadow: 0 10px 30px rgba(218, 165, 32, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .current-date::before {
+            content: "🌹";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+            animation: rotate 4s linear infinite;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: auto;
+        }
+
+        .timeline-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            position: relative;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .timeline-path {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #DAA520, #FFD700, #DAA520);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            opacity: 0;
+            animation: slideIn 1s ease forwards;
+            z-index: 2;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.8s; }
+        .timeline-item:nth-child(5) { animation-delay: 1.0s; }
+        .timeline-item:nth-child(6) { animation-delay: 1.2s; }
+        .timeline-item:nth-child(7) { animation-delay: 1.4s; }
+
+        .timeline-content {
+            position: relative;
+            width: 100%;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 40px rgba(218, 165, 32, 0.15),
+                0 0 0 1px rgba(218, 165, 32, 0.1);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(218, 165, 32, 0.2);
+            touch-action: manipulation;
+        }
+
+        .timeline-content:active {
+            transform: scale(0.98);
+        }
+
+        .timeline-marker {
+            position: absolute;
+            right: 5%;
+            top: 5%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            z-index: 10;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            border: 3px solid white;
+            box-shadow: 0 6px 20px rgba(218, 165, 32, 0.3);
+        }
+
+        .timeline-marker.completed {
+            background: linear-gradient(45deg, #DAA520, #FFD700);
+            animation: pulse-gold 2s infinite;
+        }
+
+        .timeline-marker.current {
+            background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+            animation: glow-rose 2s ease-in-out infinite alternate;
+        }
+
+        .timeline-marker.upcoming {
+            background: linear-gradient(45deg, #F5F5DC, #FFFACD);
+            border-color: #DAA520;
+        }
+
+        .event-date {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #DAA520;
+            margin-bottom: 12px;
+            text-align: center;
+            border-bottom: 2px solid rgba(218, 165, 32, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .event-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: "Amiri", serif;
+            position: relative;
+            line-height: 1.3;
+        }
+
+        .event-title::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(45deg, #DAA520, #FFD700);
+            border-radius: 1px;
+        }
+
+        .event-description {
+            font-size: 1rem;
+            color: #8B4513;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .event-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            touch-action: manipulation;
+        }
+
+        .status-completed {
+            background: linear-gradient(45deg, #DAA520, #FFD700);
+            color: white;
+            box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+        }
+
+        .status-current {
+            background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .status-upcoming {
+            background: linear-gradient(45deg, rgba(218, 165, 32, 0.1), rgba(255, 215, 0, 0.1));
+            color: #DAA520;
+            border: 1px solid rgba(218, 165, 32, 0.3);
+        }
+
+        .rose-decoration {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            color: #FF69B4;
+            opacity: 0.4;
+            animation: float 4s ease-in-out infinite;
+            font-size: 0.8rem;
+        }
+
+        .timeline-item:nth-child(odd) .rose-decoration {
+            left: -20px;
+            top: 15px;
+        }
+
+        .timeline-item:nth-child(even) .rose-decoration {
+            right: -20px;
+            top: 15px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 6px 20px rgba(218, 165, 32, 0.3); }
+            50% { box-shadow: 0 10px 30px rgba(218, 165, 32, 0.5); }
+            100% { box-shadow: 0 6px 20px rgba(218, 165, 32, 0.3); }
+        }
+
+        @keyframes glow-rose {
+            0% { box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4); }
+            100% { box-shadow: 0 12px 35px rgba(255, 105, 180, 0.7); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile-first responsive design */
+        @media (min-width: 480px) {
+            .timeline-header h1 {
+                font-size: 3rem;
+            }
+            
+            .timeline-header p {
+                font-size: 1.2rem;
+            }
+            
+            .current-date {
+                font-size: 1.1rem;
+                padding: 25px 20px;
+            }
+            
+            .timeline-item {
+                max-width: 400px;
+            }
+            
+            .timeline-content {
+                padding: 30px 25px;
+            }
+            
+            .event-title {
+                font-size: 1.5rem;
+            }
+            
+            .event-description {
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 40px 20px;
+            }
+            
+            .timeline-header {
+                margin-bottom: 60px;
+            }
+            
+            .timeline-header h1 {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+            }
+            
+            .timeline-header p {
+                font-size: 1.3rem;
+            }
+            
+            .current-date {
+                margin-bottom: 40px;
+                padding: 25px;
+                font-size: 1.2rem;
+            }
+            
+            .timeline {
+                padding: 80px 0;
+                flex-direction: row;
+                min-height: 600px;
+            }
+            
+            .timeline-wrapper {
+                flex-direction: row;
+                gap: 100px;
+                padding: 0 50px;
+                overflow-x: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .timeline-wrapper::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .timeline-path {
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(90deg, #DAA520, #FFD700, #DAA520);
+            }
+            
+            .timeline-item {
+                width: 400px;
+                max-width: none;
+                margin: 120px 0;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-content {
+                margin-right: auto;
+                margin-left: 0;
+            }
+
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: auto;
+                margin-right: 0;
+            }
+            
+            .timeline-marker {
+                left: 50%;
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+            
+            .timeline-content {
+                padding: 35px;
+                border-radius: 30px;
+            }
+            
+            .timeline-content:hover {
+                transform: translateY(-15px) scale(1.03);
+                box-shadow: 
+                    0 35px 80px rgba(218, 165, 32, 0.25),
+                    0 0 0 2px rgba(218, 165, 32, 0.3);
+                border-color: rgba(218, 165, 32, 0.4);
+            }
+            
+            .event-title {
+                font-size: 1.6rem;
+            }
+            
+            .event-description {
+                font-size: 1.1rem;
+            }
+            
+            .rose-decoration {
+                width: 20px;
+                height: 20px;
+                font-size: 1rem;
+            }
+            
+            .timeline-item:nth-child(odd) .rose-decoration {
+                left: -30px;
+                top: 20px;
+            }
+
+            .timeline-item:nth-child(even) .rose-decoration {
+                right: -30px;
+                top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .timeline-item {
+                width: 450px;
+            }
+            
+            .timeline-content {
+                padding: 40px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .timeline-content:hover {
+                transform: none;
+            }
+            
+            .timeline-content:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .timeline-content {
+                border-width: 1px;
+            }
+            
+            .timeline-marker {
+                border-width: 2px;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .timeline-header {
+                margin-bottom: 20px;
+            }
+            
+            .timeline-header h1 {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+            
+            .current-date {
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+            
+            .timeline {
+                padding: 20px 0;
+            }
+            
+            .timeline-item {
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating roses -->
+    <div class="rose">🌹</div>
+    <div class="rose">🌹</div>
+    <div class="rose">🌹</div>
+    <div class="rose">🌹</div>
+    <div class="rose">🌹</div>
+
+    <div class="timeline-container">
+        <div class="timeline-header">
+            <h1>قصة حبنا</h1>
+            <p>رحلة القلوب المتحابة</p>
+        </div>
+
+        <div class="current-date">
+            اليوم: <span id="currentDate"></span>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-path"></div>
+            
+            <div class="timeline-wrapper">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">يناير ٢٠٢٢</div>
+                        <div class="event-title">بداية القصة</div>
+                        <div class="event-description">اللحظة التي التقت فيها القلوب وبدأت حكاية حب جميلة</div>
+                        <div class="event-status status-completed">تم ✨</div>
+                    </div>
+                    <div class="timeline-marker completed">💕</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">يونيو ٢٠٢٢</div>
+                        <div class="event-title">الخطوبة</div>
+                        <div class="event-description">يوم الوعد الجميل وتبادل الخواتم أمام الأهل والأحباب</div>
+                        <div class="event-status status-completed">تم ✨</div>
+                    </div>
+                    <div class="timeline-marker completed">💍</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">أغسطس ٢٠٢٣</div>
+                        <div class="event-title">سفر</div>
+                        <div class="event-description">رحلة ذكريات جميلة وأوقات رومانسية لا تُنسى</div>
+                        <div class="event-status status-completed">تم ✨</div>
+                    </div>
+                    <div class="timeline-marker completed">✈️</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">مارس ٢٠٢٤</div>
+                        <div class="event-title">كتب الكتاب</div>
+                        <div class="event-description">يوم مقدس جعلنا زوجين أمام الله والناس</div>
+                        <div class="event-status status-completed">تم ✨</div>
+                    </div>
+                    <div class="timeline-marker completed">📜</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">سبتمبر ٧، ٢٠٢٥</div>
+                        <div class="event-title">العزال</div>
+                        <div class="event-description">استعدادات الزفاف والفرحة تملأ القلوب</div>
+                        <div class="event-status status-current">الآن 💖</div>
+                    </div>
+                    <div class="timeline-marker current">🎉</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">أكتوبر ١٥، ٢٠٢٥</div>
+                        <div class="event-title">الحنة</div>
+                        <div class="event-description">ليلة الحناء الجميلة مع الأهل والصديقات</div>
+                        <div class="event-status status-upcoming">قريباً 🌟</div>
+                    </div>
+                    <div class="timeline-marker upcoming">🤲</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="event-date">نوفمبر ١، ٢٠٢٥</div>
+                        <div class="event-title">الفرح</div>
+                        <div class="event-description">يوم الزفاف الأجمل - بداية حياة جديدة مليئة بالحب</div>
+                        <div class="event-status status-upcoming">قريباً 🌟</div>
+                    </div>
+                    <div class="timeline-marker upcoming">👰‍♀️</div>
+                    <div class="rose-decoration">🌹</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCurrentDate() {
+            const now = new Date();
+            const arabicOptions = { 
+                year: "numeric", 
+                month: "long", 
+                day: "numeric",
+                weekday: "long"
+            };
+            
+            // Convert to Arabic numerals
+            const arabicDate = now.toLocaleDateString("ar-EG", arabicOptions);
+            document.getElementById("currentDate").textContent = arabicDate;
+        }
+
+        function addFloatingAnimation() {
+            const roses = document.querySelectorAll(".rose");
+            roses.forEach((rose, index) => {
+                rose.style.animationDelay = `${index * 1.2}s`;
+                rose.style.animationDuration = `${6 + index}s`;
+            });
+        }
+
+        function addSparkleEffect() {
+            const timeline = document.querySelector(".timeline");
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const sparkle = document.createElement("div");
+                    sparkle.innerHTML = "✨";
+                    sparkle.style.position = "absolute";
+                    sparkle.style.left = Math.random() * 100 + "%";
+                    sparkle.style.top = Math.random() * 100 + "%";
+                    sparkle.style.fontSize = "1rem";
+                    sparkle.style.animation = "float 3s ease-out forwards";
+                    sparkle.style.pointerEvents = "none";
+                    sparkle.style.zIndex = "1";
+                    
+                    timeline.appendChild(sparkle);
+                    
+                    setTimeout(() => {
+                        sparkle.remove();
+                    }, 3000);
+                }
+            }, 2000);
+        }
+
+        // Touch and mobile optimizations
+        function addTouchOptimizations() {
+            const timelineContent = document.querySelectorAll(".timeline-content");
+            
+            timelineContent.forEach(content => {
+                // Prevent zoom on double tap
+                let lastTouchEnd = 0;
+                content.addEventListener("touchend", function (event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+                
+                // Add touch feedback
+                content.addEventListener("touchstart", function() {
+                    this.style.transform = "scale(0.98)";
+                });
+                
+                content.addEventListener("touchend", function() {
+                    this.style.transform = "scale(1)";
+                });
+            });
+        }
+
+        // Handle orientation change
+        function handleOrientationChange() {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        }
+
+        // Prevent pull-to-refresh on mobile
+        function preventPullToRefresh() {
+            let startY = 0;
+            document.addEventListener("touchstart", function(e) {
+                startY = e.touches[0].clientY;
+            });
+            
+            document.addEventListener("touchmove", function(e) {
+                const currentY = e.touches[0].clientY;
+                if (currentY > startY && window.scrollY === 0) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateCurrentDate();
+            addFloatingAnimation();
+            addSparkleEffect();
+            addTouchOptimizations();
+            preventPullToRefresh();
+            
+            // Handle orientation change
+            window.addEventListener("orientationchange", handleOrientationChange);
+            
+            // Add hover sound effect simulation for desktop
+            if (window.matchMedia("(hover: hover)").matches) {
+                const timelineContent = document.querySelectorAll(".timeline-content");
+                timelineContent.forEach(content => {
+                    content.addEventListener("mouseenter", function() {
+                        this.style.background = "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,245,220,0.95))";
+                    });
+                    
+                    content.addEventListener("mouseleave", function() {
+                        this.style.background = "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9))";
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
