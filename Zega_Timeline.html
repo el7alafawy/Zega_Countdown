@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عداد الفرح</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Cairo", sans-serif;
+      background: linear-gradient(135deg, #f8f4f0 0%, #e8d5c4 50%, #d4af37 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Optimized animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 60%, rgba(248, 244, 240, 0.1) 0%, transparent 50%);
+      animation: float 15s infinite linear;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(180deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .swiper {
+      width: 100%;
+      max-width: 450px;
+      margin: auto;
+      border-radius: 25px;
+      box-shadow: 0 25px 50px rgba(212, 175, 55, 0.3);
+      backdrop-filter: blur(20px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(248, 244, 240, 0.3) 100%);
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      overflow: hidden;
+    }
+
+    .swiper-slide {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 30px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(248, 244, 240, 0.2) 100%);
+      position: relative;
+      min-height: 500px;
+    }
+
+    .swiper-slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(212, 175, 55, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .couple-names {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);
+      animation: titleGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes titleGlow {
+      0% { filter: drop-shadow(0 0 5px rgba(139, 69, 19, 0.4)); }
+      100% { filter: drop-shadow(0 0 20px rgba(139, 69, 19, 0.8)); }
+    }
+
+    .subtitle {
+      margin-bottom: 30px;
+      font-size: 1.2rem;
+      color: rgba(101, 67, 33, 0.95);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .timer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .time-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .time-box {
+      background: linear-gradient(135deg, #d4af37, #b8860b);
+      color: white;
+      border-radius: 18px;
+      padding: 15px 10px;
+      width: 70px;
+      height: 70px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .time-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transform: rotate(45deg);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .time-box.animate {
+      animation: pulse 0.4s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); box-shadow: 0 12px 35px rgba(212, 175, 55, 0.6); }
+      100% { transform: scale(1); }
+    }
+
+    .time-label {
+      font-size: 0.9rem;
+      margin-top: 8px;
+      color: rgba(139, 69, 19, 0.8);
+      font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .timer-row {
+      display: contents;
+    }
+
+    .timer-row:first-child .time-box {
+      background: linear-gradient(135deg, #f8f4f0, #e8d5c4);
+      color: #8b4513;
+      box-shadow: 0 8px 25px rgba(248, 244, 240, 0.4);
+    }
+
+    .timer-row:last-child .time-box {
+      background: linear-gradient(135deg, #ffffff, #f8f4f0);
+      color: #8b4513;
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+    }
+
+    .note {
+      margin-top: 25px;
+      font-size: 1rem;
+      color: rgba(139, 69, 19, 0.9);
+      font-weight: 400;
+      text-align: center;
+      line-height: 1.6;
+      padding: 15px 20px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(248, 244, 240, 0.1) 100%);
+      border-radius: 15px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .swiper-pagination {
+      bottom: 15px !important;
+    }
+
+    .swiper-pagination-bullet {
+      width: 12px !important;
+      height: 12px !important;
+      background: rgba(212, 175, 55, 0.5) !important;
+      border: 2px solid rgba(212, 175, 55, 0.8) !important;
+      opacity: 1 !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: rgba(212, 175, 55, 0.9) !important;
+      transform: scale(1.2) !important;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.6) !important;
+    }
+
+    .heart {
+      display: inline-block;
+      color: #d4af37;
+      animation: heartbeat 1.2s ease-in-out infinite;
+      margin: 0 3px;
+    }
+
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .couple-names {
+        font-size: 1.8rem;
+      }
+      
+      .timer {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      
+      .time-box {
+        width: 60px;
+        height: 60px;
+        font-size: 1.1rem;
+        padding: 12px 8px;
+      }
+      
+      .swiper-slide {
+        padding: 30px 20px;
+        min-height: 450px;
+      }
+    }
+
+    /* Optimized loading animation */
+    .loading {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="swiper loading">
+      <div class="swiper-wrapper">
+        <!-- Timer 1 -->
+        <div class="swiper-slide">
+          <h2 class="couple-names">عبدالرحمن & هاجر</h2>
+          <div class="subtitle">باقي على كتابنا</div>
+          <div class="timer" id="timer1">
+            <div class="timer-row">
+              <div class="time-unit">
+                <div class="time-box" data-unit="years">0</div>
+                <div class="time-label">سنة</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="months">0</div>
+                <div class="time-label">شهر</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="days">0</div>
+                <div class="time-label">يوم</div>
+              </div>
+            </div>
+            <div class="timer-row">
+              <div class="time-unit">
+                <div class="time-box" data-unit="hours">0</div>
+                <div class="time-label">ساعة</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="minutes">0</div>
+                <div class="time-label">دقيقة</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="seconds">0</div>
+                <div class="time-label">ثانية</div>
+              </div>
+            </div>
+          </div>
+          <div class="note">كانت تسكن قلبي وأسكن قلبها واليوم تملك قلبي وأملك قلبها<span class="heart">❤</span></div>
+        </div>
+
+        <!-- Timer 2 -->
+        <div class="swiper-slide">
+          <h2 class="couple-names">عبدالرحمن & هاجر</h2>
+          <div class="subtitle">باقي على فرحنا</div>
+          <div class="timer" id="timer2">
+            <div class="timer-row">
+              <div class="time-unit">
+                <div class="time-box" data-unit="years">0</div>
+                <div class="time-label">سنة</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="months">0</div>
+                <div class="time-label">شهر</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="days">0</div>
+                <div class="time-label">يوم</div>
+              </div>
+            </div>
+            <div class="timer-row">
+              <div class="time-unit">
+                <div class="time-box" data-unit="hours">0</div>
+                <div class="time-label">ساعة</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="minutes">0</div>
+                <div class="time-label">دقيقة</div>
+              </div>
+              <div class="time-unit">
+                <div class="time-box" data-unit="seconds">0</div>
+                <div class="time-label">ثانية</div>
+              </div>
+            </div>
+          </div>
+          <div class="note">معاً للأبد <span class="heart">❤</span></div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+    const timers = [
+      { id: "timer1", date: new Date("2026-06-26T00:00:00") },
+      { id: "timer2", date: new Date("2026-10-26T00:00:00") }
+    ];
+
+    let previousValues = {};
+
+    function updateTimers() {
+      const now = Date.now(); // Use timestamp for better performance
+      
+      timers.forEach(timer => {
+        let diff = timer.date.getTime() - now;
+
+        if (diff < 0) diff = 0;
+
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        const months = Math.floor(days / 30.44);
+        const years = Math.floor(months / 12);
+
+        const values = { 
+          years, 
+          months: months % 12, 
+          days: Math.floor((diff / (1000 * 60 * 60 * 24)) % 30.44),
+          hours: hours % 24, 
+          minutes: minutes % 60, 
+          seconds: seconds % 60 
+        };
+        
+        // Update display with optimized animation
+        Object.keys(values).forEach(unit => {
+          const element = document.querySelector(`#${timer.id} [data-unit="${unit}"]`);
+          const newValue = values[unit];
+          const prevValue = previousValues[`${timer.id}-${unit}`];
+          
+          if (element && element.textContent !== newValue.toString()) {
+            element.textContent = newValue;
+            
+            // Add pulse animation when value changes
+            if (prevValue !== undefined && prevValue !== newValue) {
+              element.classList.remove('animate');
+              requestAnimationFrame(() => {
+                element.classList.add('animate');
+                setTimeout(() => element.classList.remove('animate'), 400);
+              });
+            }
+          }
+          
+          previousValues[`${timer.id}-${unit}`] = newValue;
+        });
+      });
+    }
+
+    // Initialize Swiper with optimized settings
+    const swiper = new Swiper('.swiper', {
+      effect: 'cube',
+      grabCursor: true,
+      cubeEffect: {
+        shadow: true,
+        slideShadows: true,
+        shadowOffset: 20,
+        shadowScale: 0.94,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      autoplay: {
+        delay: 6000, // Reduced from 8000ms
+        disableOnInteraction: false,
+      },
+      speed: 600, // Reduced from 800ms
+      loop: true,
+    });
+
+    // Optimized timer updates
+    setInterval(updateTimers, 1000);
+    updateTimers();
+
+    // Faster loading animation
+    requestAnimationFrame(() => {
+      document.querySelector('.swiper').classList.remove('loading');
+    });
+  </script>
+</body>
+</html>
